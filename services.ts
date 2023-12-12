@@ -1,8 +1,8 @@
-// const fs = require("fs/promises");
-// const fse = require("fs-extra");
-const booksFile = "books.json";
+
 import fs from "fs/promises";
-import fse from "fs-extra";
+
+
+const booksFile = "books.json";
 
 interface Ibook {
   name: string;
@@ -36,7 +36,7 @@ async function readFile(file: string): Promise<Ibook | any> {
 
 async function getBook(name: string): Promise<Ibook[]> {
   try {
-    const books = await readFile("books.json");
+    const books = await readFile(booksFile);
     const bookFound = checkBookExists(books["books"], "name", name);
     return bookFound;
   } catch (e: any) {

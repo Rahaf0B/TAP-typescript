@@ -1,8 +1,3 @@
-// const express = require("express");
-// const routeLibrary = express.Router();
-// const bodyParser = require("body-parser");
-// const services = require("./services.js");
-// const e = require("express");
 
 import express,{Router,Request,Response} from "express";
 import services from "./services";
