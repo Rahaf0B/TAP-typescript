@@ -76,22 +76,22 @@ async function getBookWithIsbn(isbn: number): Promise<Ibook[]> {
   }
 }
 
-function checkBookData(data: any):boolean {
-  if (Object.keys(data).length !== 0) {
-    let Iobj: Ibook = { name: "", author: "", isbn: 0 };
+// function checkBookData(data: any):boolean {
+//   if (Object.keys(data).length !== 0) {
+//     let Iobj: Ibook = { name: "", author: "", isbn: 0 };
 
-    return (
-      Object.keys(data).length === Object.keys(Iobj).length &&
-      Object.keys(Iobj).every(
-        (key) =>
-          key in data && typeof data[key] === typeof Iobj[key as keyof Ibook]
-      )
-    );
-  }
-  return false;
-}
+//     return (
+//       Object.keys(data).length === Object.keys(Iobj).length &&
+//       Object.keys(Iobj).every(
+//         (key) =>
+//           key in data && typeof data[key] === typeof Iobj[key as keyof Ibook]
+//       )
+//     );
+//   }
+//   return false;
+// }
 
-async function addBooks(dataInfo: Ibook):Promise<any>{
+async function addBooks(dataInfo: Ibook): Promise<any> {
   try {
     try {
       await checkFileData();
@@ -115,5 +115,4 @@ export default {
   getBookByName,
   getBookWithIsbn,
   addBooks,
-  checkBookData,
 };
