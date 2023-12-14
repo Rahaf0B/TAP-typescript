@@ -1,0 +1,19 @@
+html 
+  head
+    title Library
+  body 
+    if status===200
+      table(style={border:"1px solid black",width:"fit-content", "margin-left": "auto",
+      "margin-right": "auto"})
+        tr
+          th(style={border:"1px solid black",padding:"10px"}) ISBN 
+          th(style={border:"1px solid black",padding:"10px"}) Name
+          th(style={border:"1px solid black",padding:"10px"}) Author
+
+        each item in data
+          tr
+              td(style={border:"1px solid black",padding:"10px"}) #{item.isbn} 
+              td(style={border:"1px solid black",padding:"10px"}) #{item.name}
+              td(style={border:"1px solid black",padding:"10px"}) #{item.author}
+    else 
+      h3(style={color:"red"})=message 
