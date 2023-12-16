@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 
 const booksFile = "books.json";
+import Search from "./SearchAlgo/fuzzySearch";
 
 export interface Ibook {
   name: string;
@@ -11,28 +12,19 @@ export interface Ibook {
 let books: Ibook[] = null;
 
 function checkBookExists(
-  books: Ibook[],
+  booksToSearch: Ibook[],
   checkingProps: keyof Ibook,
   value: string | number
 ): Ibook[] {
   try {
-    const book = books?.filter((book: Ibook) =>
-      book[checkingProps]
-        .toString()
-        .toLowerCase()
-        .startsWith(value.toString().trim().toLowerCase())
+    const book = booksToSearch?.filter(
+      (book: Ibook) => book[checkingProps] === value
+
+      // .toString()
+      // .toLowerCase()
+      // .startsWith(value.toString().trim().toLowerCase())
     );
     return book;
-  } catch (e: any) {
-    throw new Error(e.message);
-  }
-}
-
-async function checkFileData() {
-  try {
-    if (books === null) {
-      books = await readFile(booksFile);
-    }
   } catch (e: any) {
     throw new Error(e.message);
   }
@@ -49,18 +41,27 @@ async function readFile(file: string): Promise<Ibook[] | any> {
 
 async function getBooks(): Promise<Ibook[]> {
   try {
-    await checkFileData();
+    if (books === null) {
+      books = await readFile(booksFile);
+    }
     return books;
   } catch (e: any) {
     throw new Error(e.message);
   }
 }
 
-async function getBookByName(value: string): Promise<Ibook[]> {
+async function getBookByName(
+  value: string,
+  sortType?: string
+): Promise<Ibook[]> {
   try {
-    await checkFileData();
-    const bookFound = checkBookExists(books, "name", value);
-    return bookFound;
+    const booksData = await getBooks();
+    return await Search.SearchingAndOrder(
+      booksData,
+      "name",
+      value.trim(),
+      sortType
+    );
   } catch (e: any) {
     throw new Error(e.message);
   }
@@ -68,40 +69,26 @@ async function getBookByName(value: string): Promise<Ibook[]> {
 
 async function getBookWithIsbn(isbn: number): Promise<Ibook[]> {
   try {
-    await checkFileData();
-    const book = checkBookExists(books, "isbn", isbn);
+    const booksData = await getBooks();
+    const book = checkBookExists(booksData, "isbn", isbn);
     return book;
   } catch (e: any) {
     throw new Error(e.message);
   }
 }
 
-// function checkBookData(data: any):boolean {
-//   if (Object.keys(data).length !== 0) {
-//     let Iobj: Ibook = { name: "", author: "", isbn: 0 };
-
-//     return (
-//       Object.keys(data).length === Object.keys(Iobj).length &&
-//       Object.keys(Iobj).every(
-//         (key) =>
-//           key in data && typeof data[key] === typeof Iobj[key as keyof Ibook]
-//       )
-//     );
-//   }
-//   return false;
-// }
-
 async function addBooks(dataInfo: Ibook): Promise<any> {
   try {
+    let booksData;
     try {
-      await checkFileData();
+      booksData = await getBooks();
     } finally {
-      const book = checkBookExists(books, "name", dataInfo.name);
+      const book = checkBookExists(booksData, "name", dataInfo.name);
       if (book?.length > 0) {
         throw new Error("The Book already exists");
       }
-      books?.push(dataInfo);
-      const dataToWrite = books ? books : { books: [dataInfo] };
+      booksData?.push(dataInfo);
+      const dataToWrite = booksData ? booksData : { books: [dataInfo] };
       fs.writeFile(booksFile, JSON.stringify(dataToWrite));
       return { message: "The data has been updated" };
     }

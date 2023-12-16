@@ -73,6 +73,11 @@ async function validateNameQuery(
         .typeError("The Name Should be String")
         .nullable()
         .required("The Name is required"),
+      sort: string()
+        .oneOf(["asc", "desc"])
+        .strict(true)
+        .typeError("The Sort Type Should be String")
+        .nullable(),
     }),
   });
 

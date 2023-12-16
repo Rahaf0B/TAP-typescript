@@ -10,7 +10,10 @@ router.get(
   async (req: Request, res: Response) => {
     if (req.query.name) {
       try {
-        const response = await services.getBookByName(req.query.name as string);
+        const response = await services.getBookByName(
+          req.query.name as string,
+          req.query.sort as string
+        );
         if (response.length == 0) {
           res.status(200).send({ "error-Massage": "Book Not Found" });
         } else {
