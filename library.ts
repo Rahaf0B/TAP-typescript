@@ -8,22 +8,15 @@ router.get(
   "/book",
   reqValidation.validateNameQuery,
   async (req: Request, res: Response) => {
-    if (req.query.name) {
-      try {
-        const response = await services.getBookByName(
-          req.query.name as string,
-          req.query.sort as string
-        );
-        if (response.length == 0) {
-          res.status(200).send({ "error-Massage": "Book Not Found" });
-        } else {
-          res.status(200).send(response);
-        }
-      } catch (e: any) {
-        res.status(200).send({ "error-Massage": e.message });
-      }
-    } else {
-      res.status(200).send({ "error-Massage": "Query Parameter Not Found" });
+    try {
+      const response = await services.getBookByName(
+        req.query.name as string,
+        req.query.sort as string
+      );
+
+      res.status(200).send(response);
+    } catch (e: any) {
+      res.status(500).send();
     }
   }
 );
@@ -35,13 +28,10 @@ router.get(
     try {
       const book = await services.getBookWithIsbn(parseInt(req.params.isbn));
 
-      if (book) {
         res.render("book", { status: 200, data: book });
-      } else {
-        res.render("book", { status: 400, message: "book not found" });
-      }
+     
     } catch (e: any) {
-      res.render("book", { status: 400, message: e.message });
+      res.render("book", { status: 500 });
     }
   }
 );
@@ -51,7 +41,7 @@ router.get("/", async (req: Request, res: Response) => {
     const books = await services.getBooks();
     res.render("books", { status: 200, data: books });
   } catch (e: any) {
-    res.render("books", { status: 400, message: e.message });
+    res.render("books", { status: 500 });
   }
 });
 
@@ -66,7 +56,7 @@ router.post(
       const response = await services.addBooks(req.body);
       res.status(200).send({ message: response.message });
     } catch (e: any) {
-      res.status(400).send({ message: e.message });
+      res.status(500).send();
     }
   }
 );

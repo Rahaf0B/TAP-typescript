@@ -87,6 +87,7 @@ async function addBooks(dataInfo: Ibook): Promise<any> {
       if (book?.length > 0) {
         throw new Error("The Book already exists");
       }
+      books?.push(dataInfo);
       booksData?.push(dataInfo);
       const dataToWrite = booksData ? booksData : { books: [dataInfo] };
       fs.writeFile(booksFile, JSON.stringify(dataToWrite));
